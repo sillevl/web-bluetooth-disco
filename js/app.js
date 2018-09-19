@@ -1,8 +1,19 @@
+let ledCharacteristic = null;
+
 window.addEventListener('load', () => {
     console.log("Staring application");
 
     let button = document.getElementById('connect');
-    button.addEventListener('click', connect)
+    button.addEventListener('click', connect);
+
+    let sendButton = document.getElementById('send');
+    sendButton.addEventListener('click', function(){
+        let view = new Uint8Array(3);
+        view[0] = 0x00;
+        view[1] = 0x00;
+        view[2] = 0xFF;
+        ledCharacteristic.writeValue(view);
+    });
 });
 
 function handleCharacteristicValueChanged(event) {
@@ -12,30 +23,34 @@ function handleCharacteristicValueChanged(event) {
 
 function connect(){
     navigator.bluetooth.requestDevice({ 
-        acceptAllDevices: true, 
-        optionalServices: ['e95d9882-251d-470a-a062-fa1922dfa9a8']
+        filters: [{
+            namePrefix: 'SoDaQ',
+        }],
+        // acceptAllDevices: true, 
+        optionalServices: ['ad11cf40-063f-11e5-be3e-0002a5d5c51b']
     })
-.then(device => {
-    // Human-readable name of the device.
-    console.log(device.name);
+    .then(device => {
+        // Human-readable name of the device.
+        console.log(device.name);
 
-    // Attempts to connect to remote GATT Server.
-    return device.gatt.connect();
-})
-.then(server => {
-    // Getting Battery Service...
-    return server.getPrimaryService('e95d9882-251d-470a-a062-fa1922dfa9a8');
-})
-.then(service => {
-    // Getting Battery Level Characteristic...
-    return service.getCharacteristic('e95dda90-251d-470a-a062-fa1922dfa9a8');
-})
-.then(characteristic => characteristic.startNotifications()
-.then(characteristic => {
-    characteristic.addEventListener('characteristicvaluechanged',
-                                    handleCharacteristicValueChanged);
-    console.log('Notifications have been started.');
-  })
-)
-.catch(error => { console.log(error); });
+        // Attempts to connect to remote GATT Server.
+        return device.gatt.connect();
+    })
+    .then(server => {
+        return server.getPrimaryService('ad11cf40-063f-11e5-be3e-0002a5d5c51b');
+    })
+    .then(service => {
+        return service.getCharacteristic('bf3fbd80-063f-11e5-9e69-0002a5d5c503');
+    })
+    .then(charcteristic => {
+        ledCharacteristic = charcteristic;
+    })
+    // .then(characteristic => characteristic.startNotifications()
+    // .then(characteristic => {
+    //     characteristic.addEventListener('characteristicvaluechanged',
+    //                                     handleCharacteristicValueChanged);
+    //     console.log('Notifications have been started.');
+    // })
+    // )
+    .catch(error => { console.log(error); });
 }

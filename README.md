@@ -1,2 +1,2 @@
-# ble-beacons
-Web application using Bluetooth API
+# web-bluetooth-disco
+Sample project for web bluetooth using the Sodaq Discovery board

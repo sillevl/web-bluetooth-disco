@@ -1,0 +1,9 @@
+.colors .card-panel:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.topbar {
+  margin-bottom: 1rem;
+}

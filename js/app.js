@@ -17,6 +17,7 @@ window.addEventListener('load', () => {
 });
 
 function handleCharacteristicValueChanged(event) {
+    console.log("event !!!");
     var value = event.target.value;
     console.log('Received ' + value);
   }
@@ -24,7 +25,7 @@ function handleCharacteristicValueChanged(event) {
 function connect(){
     navigator.bluetooth.requestDevice({ 
         filters: [{
-            namePrefix: 'SoDaQ',
+            namePrefix: 'Disco',
         }],
         // acceptAllDevices: true, 
         optionalServices: ['ad11cf40-063f-11e5-be3e-0002a5d5c51b']
@@ -45,12 +46,21 @@ function connect(){
     .then(charcteristic => {
         ledCharacteristic = charcteristic;
     })
-    // .then(characteristic => characteristic.startNotifications()
+    // .then(service => {
+    //     return service.getCharacteristic('bf3fbd80-063f-11e5-9e69-0002a5d5c501');
+    // })
     // .then(characteristic => {
-    //     characteristic.addEventListener('characteristicvaluechanged',
-    //                                     handleCharacteristicValueChanged);
+    //     return characteristic.readValue();
+    // })
+    // .then(value => {
+    //     console.log(value.byteLength);
+    //     console.log('> Temperature: ' + value.getInt16());
+    // })
+    // .then(characteristic => {return characteristic.startNotifications()})
+    // .then(characteristic => {
+    //     characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
     //     console.log('Notifications have been started.');
     // })
-    // )
+    
     .catch(error => { console.log(error); });
 }
